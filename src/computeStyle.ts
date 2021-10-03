@@ -1,61 +1,105 @@
 import * as React from 'react';
 import { PropsPopoverContainer } from './PopoverContainer';
 
+type Dict = {
+	[K in PropsPopoverContainer['place']]: {
+		name: string,
+		value: number,
+		alternateValue?: number,
+	}
+}[];
+
 export const computeStyle = (
 	triggerRect: DOMRect,
 	containerWidth: number,
 	containerHeight: number,
 	place: PropsPopoverContainer['place'] = 'topBottom',
-) => {
+): React.CSSProperties => {
 	const vpWidth = document.documentElement.clientWidth;
 	const vpHeight = document.documentElement.clientHeight;
 	const pageWidth = document.documentElement.offsetWidth;
 	const pageHeight = document.documentElement.offsetHeight;
-	let newStyle: React.CSSProperties = {};
-	let transformOrigin = [0, 0];
-	if (place === 'topBottom') {
-		// 上: ページ上からトリガー下までの距離
-		const top = triggerRect.bottom + scrollY;
-		// 左: ページ左からトリガー左までの距離+移動
-		const left = triggerRect.left + scrollX + triggerRect.width / 2 - containerWidth / 2;
-		// 右: ページ右からトリガー右までの距離+移動-調整
-		const right = pageWidth - (triggerRect.right + scrollX) + triggerRect.width / 2 - containerWidth / 2 - (pageWidth - vpWidth);
-		// 下: ページ下からトリガー上までの距離-調整
-		const bottom = pageHeight - (triggerRect.top + scrollY) - (pageHeight - vpHeight);
-		// 画面上からトリガー上までの距離 < 画面下からトリガー下までの距離
-		if (triggerRect.top < vpHeight - triggerRect.bottom) {
-			newStyle.top = top;
-			newStyle.maxHeight = vpHeight - triggerRect.bottom;
-		} else {
-			newStyle.bottom = bottom;
-			newStyle.maxHeight = triggerRect.top;
-		}
-		// 画面左からトリガー左までの距離 < 画面右からトリガー右までの距離
-		if (triggerRect.left < vpWidth - triggerRect.right) {
-			// 左0はscrollX
-			newStyle.left = left > scrollX ? left : scrollX;
-		} else {
-			// 右0は-scrollX
-			newStyle.right = right > -scrollX ? right : -scrollX;
-		}
-	} else {
-		const left = triggerRect.right + scrollX;
-		const top = triggerRect.top + scrollY + triggerRect.height / 2 - containerHeight / 2;
-		const bottom = pageHeight - (triggerRect.bottom + scrollY) + triggerRect.height / 2 - containerHeight / 2 - (pageHeight - vpHeight);
-		const right = pageWidth - (triggerRect.left + scrollX) - (pageWidth - vpWidth);
-		if (triggerRect.left < vpWidth - triggerRect.right) {
-			newStyle.left = left;
-			newStyle.maxWidth = vpWidth - triggerRect.right;
-		} else {
-			newStyle.right = right;
-			newStyle.maxWidth = triggerRect.left;
-		}
-		if (triggerRect.top < vpHeight - triggerRect.bottom) {
-			newStyle.top = top > scrollY ? top : scrollY;
-		} else {
-			newStyle.bottom = bottom > -scrollY ? bottom : -scrollY;
-		}
-		newStyle.maxHeight = vpHeight;
-	}
+	const adjustPosX = - (pageWidth - vpWidth);
+	const adjustPosY = - (pageHeight - vpHeight);
+	const adjustAxisX = triggerRect.width / 2 - containerWidth / 2;
+	const adjustAxisY = triggerRect.height / 2 - containerHeight / 2;
+	const axisLengthSrc = [{
+		topBottom: vpHeight - triggerRect.bottom,
+		rightLeft: vpWidth - triggerRect.right,
+	}, {
+		topBottom: triggerRect.top,
+		rightLeft: triggerRect.left,
+	}];
+	const axisLength: Dict = [{
+		topBottom: { name: 'maxHeight', value: axisLengthSrc[0].topBottom },
+		rightLeft: { name: 'maxWidth', value: axisLengthSrc[0].rightLeft },
+	}, {
+		topBottom: { name: 'maxHeight', value: axisLengthSrc[1].topBottom },
+		rightLeft: { name: 'maxWidth', value: axisLengthSrc[1].rightLeft },
+	}];
+	const contact: Dict = [{
+		topBottom: { name: 'top', value: triggerRect.bottom + scrollY },
+		rightLeft: { name: 'left', value: triggerRect.right + scrollX },
+	}, {
+		topBottom: { name: 'bottom', value: pageHeight - (triggerRect.top + scrollY) + adjustPosY },
+		rightLeft: { name: 'right', value: pageWidth - (triggerRect.left + scrollX) + adjustPosX },
+	}];
+	const axis: Dict = [{
+		topBottom: {
+			name: 'left',
+			value: triggerRect.left + scrollX + adjustAxisX,
+			alternateValue: scrollX,
+		},
+		rightLeft: {
+			name: 'top',
+			value: triggerRect.top + scrollY + adjustAxisY,
+			alternateValue: scrollY,
+		},
+	}, {
+		topBottom: {
+			name: 'right',
+			value: pageWidth - (triggerRect.right + scrollX) + adjustAxisX + adjustPosX,
+			alternateValue: -scrollX,
+		},
+		rightLeft: {
+			name: 'bottom',
+			value: pageHeight - (triggerRect.bottom + scrollY) + adjustAxisY + adjustPosY,
+			alternateValue: -scrollY,
+		},
+	}];
+	const transformOrigin = [{
+		topBottom: {
+			value: { x: '50%', y: '0%' },
+			alternateValue: { x: triggerRect.left + triggerRect.width / 2 + 'px', y: '0%' },
+		},
+		rightLeft: {
+			value: { x: '0%', y: '50%' },
+			alternateValue: { x: '0%', y: triggerRect.top + triggerRect.height / 2 + 'px' },
+		},
+	}, {
+		topBottom: {
+			value: { x: '50%', y: '100%' },
+			alternateValue: { x: containerWidth - (vpWidth - triggerRect.right) - triggerRect.width / 2 + 'px', y: '100%' },
+		},
+		rightLeft: {
+			value: { x: '100%', y: '50%' },
+			alternateValue: { x: '100%', y: containerHeight - (vpHeight - triggerRect.bottom) - triggerRect.height / 2 + 'px' },
+		},
+	}];
+	const inactivePlace = place === 'topBottom' ? 'rightLeft' : 'topBottom';
+	const idxC = axisLengthSrc[0][place] > axisLengthSrc[1][place] ? 0 : 1;
+	const idxA = axisLengthSrc[0][inactivePlace] > axisLengthSrc[1][inactivePlace] ? 0 : 1;
+	const valueToUse = axis[idxA][place].value > axis[idxA][place].alternateValue ? 'value' : 'alternateValue';
+	const newStyle = {
+		maxWidth: '100%',
+		maxHeight: '100%',
+		[contact[idxC][place].name]: contact[idxC][place].value,
+		[axis[idxA][place].name]: axis[idxA][place][valueToUse],
+		[axisLength[idxC][place].name]: axisLength[idxC][place].value,
+		transformOrigin: place === 'topBottom'
+			? transformOrigin[idxA][place][valueToUse].x + ' ' + transformOrigin[idxC][place][valueToUse].y
+			: transformOrigin[idxC][place][valueToUse].x + ' ' + transformOrigin[idxA][place][valueToUse].y,
+	};
+	console.log(`idxC: ${idxC}, idxA: ${idxA}, valueToUse: ${valueToUse}`)
 	return newStyle;
 }
