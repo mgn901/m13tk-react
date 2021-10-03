@@ -100,6 +100,5 @@ export const computeStyle = (
 			? transformOrigin[idxA][place][valueToUse].x + ' ' + transformOrigin[idxC][place][valueToUse].y
 			: transformOrigin[idxC][place][valueToUse].x + ' ' + transformOrigin[idxA][place][valueToUse].y,
 	};
-	console.log(`idxC: ${idxC}, idxA: ${idxA}, valueToUse: ${valueToUse}`)
 	return newStyle;
 }
