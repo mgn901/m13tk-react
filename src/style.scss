@@ -1,39 +1,31 @@
 .tkreact-popover-container {
+	position: absolute;
+	z-index: 1;
 	overflow: auto;
 	--transition-in: cubic-bezier(0, 0, 0, 1);
 }
 
-.tkreact-popover-container {
-	display: none;
-	position: absolute;
-	z-index: 1;
-}
-
 .tkreact-popover-container-transition-enter {
-	display: block;
 	opacity: 0;
 	transform: scale(.9);
 }
 
 .tkreact-popover-container-transition-enter-active {
-	display: block;
 	opacity: 1;
 	transform: scale(1);
 	transition: .1s var(--transition-in);
 }
 
-.tkreact-popover-container-transition-enter-done {
-	display: block;
-}
-
 .tkreact-popover-container-transition-exit {
-	display: block;
 	opacity: 1;
 	transform: scale(1);
 }
 
+.tkreact-popover-container-transition-exit-done:not(.tkreact-popover-container-transition-exit, .tkreact-popover-container-transition-exit-active) {
+	display: none !important;
+}
+
 .tkreact-popover-container-transition-exit-active {
-	display: block;
 	opacity: 0;
 	transform: scale(.9);
 	transition: .1s var(--transition-in);
