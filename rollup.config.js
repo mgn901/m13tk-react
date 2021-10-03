@@ -25,7 +25,7 @@ let pluginsDemo = [
 	scss({
 		output: './demo/style.css',
 		outputStyle: 'compressed',
-		watch: './src/style.scss',
+		watch: './demo-src/style.scss',
 	}),
 ];
 
@@ -56,7 +56,7 @@ const generateConfigDemo = (input) => {
 // モジュール向けの設定
 
 let config = [
-	generateConfigDemo('./src/m13tk-react.tsx'),
+	generateConfigDemo('./demo-src/m13tk-react.tsx'),
 ];
 
 export default config;
