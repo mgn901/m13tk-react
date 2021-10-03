@@ -19,7 +19,7 @@ export const computeStyle = (
 		// 左: ページ左からトリガー左までの距離+移動
 		const left = triggerRect.left + scrollX + triggerRect.width / 2 - containerWidth / 2;
 		// 右: ページ右からトリガー右までの距離+移動-調整
-		const right = pageWidth - (triggerRect.left + scrollX) + triggerRect.width / 2 - containerWidth / 2 - (pageWidth - vpWidth);
+		const right = pageWidth - (triggerRect.right + scrollX) + triggerRect.width / 2 - containerWidth / 2 - (pageWidth - vpWidth);
 		// 下: ページ下からトリガー上までの距離-調整
 		const bottom = pageHeight - (triggerRect.top + scrollY) - (pageHeight - vpHeight);
 		// 画面上からトリガー上までの距離 < 画面下からトリガー下までの距離
