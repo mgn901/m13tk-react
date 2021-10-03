@@ -31,7 +31,7 @@ let pluginsDemo = [
 	scss({
 		output: './demo/style.css',
 		outputStyle: 'compressed',
-		watch: './src'
+		watch: './src/style.scss',
 	}),
 ];
 
@@ -107,7 +107,6 @@ if (process.env.BUILD === 'production') {
 				scss({
 					output: './css/style.css',
 					outputStyle: 'compressed',
-					watch: './src/scss',
 				}),
 			],
 		},

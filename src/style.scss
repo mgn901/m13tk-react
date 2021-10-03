@@ -1,4 +1,5 @@
 .tkreact-popover-container {
+	overflow: auto;
 	--transition-in: cubic-bezier(0, 0, 0, 1);
 }
 
@@ -6,7 +7,6 @@
 	display: none;
 	position: absolute;
 	z-index: 1;
-	width: max-content;
 }
 
 .tkreact-popover-container-transition-enter {
@@ -52,4 +52,7 @@
 	border:none;
 	background: transparent;
 	color: transparent;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-user-select: none;
+	user-select: none;
 }
