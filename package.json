@@ -4,17 +4,20 @@
   "description": "Useful React components and hooks working with m13TK.",
   "entry": "src/index.ts",
   "main": "cjs/index.js",
-  "module": "es/index.js",
+  "module": "esm/index.js",
   "style": "css/style.css",
   "files": [
     "package.json",
     "LICENSE.txt",
     "cjs",
-    "es"
+    "es",
+    "css"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c --environment BUILD:production",
+    "build:esm": "tsc -p ./tsconfig.esm.json",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "build:css": "sass ./src/style.scss --style compressed --no-source-map | node ./scripts/sanitizeCSS.js > ./css/style.css",
     "start": "rollup -c -w --environment BUILD:development",
     "generateThirdpartyFile": "license-checker --production --json --customPath ./scripts/customPath.json | node ./scripts/sanitizeThirdpartyFile.js > ./THIRDPARTY.json"
   },
@@ -29,7 +32,9 @@
   },
   "homepage": "https://github.com/mgn901/m13tk-react#readme",
   "dependencies": {
-    "@mgn901/m13tk": "^1.0.1",
+    "@mgn901/m13tk": "^1.0.1"
+  },
+  "peerDependencies": {
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-transition-group": "^4.4.2"
@@ -43,10 +48,8 @@
     "@types/react-dom": "^17.0.9",
     "@types/react-transition-group": "^4.4.3",
     "rollup": "^2.57.0",
-    "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-scss": "^3.0.0",
     "rollup-plugin-serve": "^1.1.0",
-    "rollup-plugin-terser": "^7.0.2",
     "sass": "^1.42.1",
     "typescript": "^4.4.3"
   }

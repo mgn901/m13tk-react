@@ -2,8 +2,11 @@
 	"compilerOptions": {
 		"target": "es5",
 		"module": "es2020",
+		"rootDir": "./src",
+		"outDir": "./esm",
 		"jsx": "react",
 		"moduleResolution": "node",
-		"lib": ["es2020", "dom"]
+		"lib": ["es2020", "dom"],
+		"declaration": true
 	}
 }

@@ -4,8 +4,6 @@ import replace from '@rollup/plugin-replace';
 import typescript from '@rollup/plugin-typescript';
 import scss from 'rollup-plugin-scss';
 import serve from 'rollup-plugin-serve';
-import { terser } from 'rollup-plugin-terser';
-import pkg from './package.json';
 
 // Demo向けのプラグイン
 
@@ -22,10 +20,6 @@ let pluginsDemoTS = [
 	commonjs(),
 ];
 
-if (process.env.BUILD === 'production') {
-	pluginsDemoTS.push(terser());
-}
-
 let pluginsDemo = [
 	...pluginsDemoTS,
 	scss({
@@ -35,10 +29,6 @@ let pluginsDemo = [
 	}),
 ];
 
-if (process.env.BUILD === 'production') {
-	pluginsDemo.push(terser());
-}
-
 if (process.env.BUILD === 'development') {
 	pluginsDemo.push(serve({
 		contentBase: ['./demo', './'],
@@ -47,15 +37,6 @@ if (process.env.BUILD === 'development') {
 }
 
 // モジュール向けのプラグイン
-
-const generatePluginsModuleTS = (format) => {
-	return [
-		typescript({
-			outDir: './' + format,
-			declaration: true,
-		}),
-	];
-};
 
 // デモ向けの設定
 
@@ -74,43 +55,8 @@ const generateConfigDemo = (input) => {
 
 // モジュール向けの設定
 
-const generateConfigModule = (input, format) => {
-	return {
-		input,
-		output: {
-			dir: './' + format,
-			format,
-			sourcemap: false,
-		},
-		plugins: [
-			...generatePluginsModuleTS(format),
-			terser(),
-		],
-		external: [
-			...Object.keys(pkg.dependencies || {}),
-			...Object.keys(pkg.devDependencies || {}),
-		],
-	};
-};
-
 let config = [
 	generateConfigDemo('./src/m13tk-react.tsx'),
 ];
-
-if (process.env.BUILD === 'production') {
-	config.push(
-		generateConfigModule(pkg.entry, 'es'),
-		generateConfigModule(pkg.entry, 'cjs'),
-		{
-			input: './src/style.scss',
-			plugins: [
-				scss({
-					output: './css/style.css',
-					outputStyle: 'compressed',
-				}),
-			],
-		},
-	);
-}
 
 export default config;
