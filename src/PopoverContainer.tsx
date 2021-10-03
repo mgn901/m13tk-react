@@ -2,27 +2,75 @@ import * as React from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { computeStyle } from './computeStyle';
 import { usePopoverContext } from './ProviderPopoverContext';
+import * as ReactDOM from 'react-dom';
 
 export interface PropsPopoverContainer {
 	children: React.ReactNode,
 	isOpened: boolean,
 	trigger: Element | null,
-	closePopover: () => void,
+	close: () => void,
+	place?: 'topBottom' | 'rightLeft',
 	className?: HTMLElement['className'],
-}
+};
 
 export const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
-	const { instances, setInstances } = usePopoverContext();
-	const [idx, setIdx] = React.useState<number | null>(null);
-	const [key, setKey] = React.useState(Math.random() * (2 ** 53));
+	const { ids, setIds } = usePopoverContext();
+	const [id, setId] = React.useState(Math.random() * (2 ** 53));
+	const [ready, setReady] = React.useState<boolean>(false);
+	const initialRect = {
+		x: 0,
+		y: 0,
+		top: 0,
+		right: 0,
+		bottom: 0,
+		left: 0,
+		width: 0,
+		height: 0,
+		toJSON: () => { },
+	};
+	const [triggerRect, setTriggerRect] = React.useState<DOMRect>(initialRect);
 	const [style, setStyle] = React.useState<React.CSSProperties>({});
 	const className = props.className === undefined ? '' : ` ${props.className}`;
-	const renderedInstance = <div key={key} className='tkreact-popover-instance'>
+	const elementId = 'tkreact-popover-instance-' + id;
+	if (ids.indexOf(id) === -1) {
+		setIds((ids) => {
+			ids.push(id);
+			return ids;
+		});
+	}
+	React.useEffect(() => {
+		const id_ = id;
+		setReady(true);
+		return () => {
+			setIds((ids) => {
+				const idx = ids.indexOf(id_);
+				ids.splice(idx);
+				return ids;
+			});
+		};
+	}, []);
+	React.useEffect(() => {
+		const newTriggerRect = props.trigger !== null
+			? props.trigger.getBoundingClientRect()
+			: triggerRect;
+		const containerWidth = containerRef.current !== null
+			? containerRef.current.offsetWidth
+			: 0
+		const containerHeight = containerRef.current !== null
+			? containerRef.current.offsetHeight
+			: 0
+		setTriggerRect(newTriggerRect);
+		if (props.isOpened) {
+			const newStyle = computeStyle(newTriggerRect, containerWidth, containerHeight, props.place);
+			setStyle(newStyle);
+		}
+	}, [props.isOpened, props.children]);
+	const renderedInstance = <>
 		{props.isOpened
 			&& <button
 				className='tkreact-popover-closer'
-				onClick={props.closePopover}
+				onClick={props.close}
 				aria-hidden={true}></button>
 		}
 		<CSSTransition
@@ -36,39 +84,10 @@ export const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 				{props.children}
 			</div>
 		</CSSTransition>
-	</div>
-	let newIdx: number;
-	React.useEffect(() => {
-		Promise.resolve().then(() => {
-			setInstances((instances) => {
-				let newInstances = [...instances];
-				newInstances.push(renderedInstance);
-				newIdx = newInstances.length - 1;
-				return newInstances;
-			});
-		}).then(() => {
-			setIdx(newIdx);
-		});
-		return () => {
-			setInstances((instances) => {
-				let newInstances = [...instances];
-				newInstances[newIdx] = null;
-				return newInstances;
-			});
-		}
-	}, []);
-	React.useEffect(() => {
-		Promise.resolve().then(() => {
-			setInstances((instances) => {
-				let newInstances = [...instances];
-				newInstances[idx] = renderedInstance;
-				return newInstances;
-			});
-		}).then(() => {
-			console.log(props.trigger);
-			console.log(containerRef.current !== null ? containerRef.current.getBoundingClientRect() : undefined);
-			setStyle(computeStyle(props.trigger, containerRef.current));
-		});
-	}, [idx, props]);
-	return <></>
+	</>;
+	if (ready) {
+		return ReactDOM.createPortal(renderedInstance, document.getElementById(elementId));
+	} else {
+		return null;
+	}
 }
