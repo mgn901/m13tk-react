@@ -10,6 +10,7 @@ export interface PropsPopoverContainer {
 	trigger: Element | null,
 	close: () => void,
 	place?: 'topBottom' | 'rightLeft',
+	timeout?: number;
 	className?: HTMLElement['className'],
 };
 
@@ -89,7 +90,7 @@ export const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 		}
 		<CSSTransition
 			in={props.isOpened}
-			timeout={100}
+			timeout={timeout}
 			classNames='tkreact-popover-container-transition'>
 			<div
 				ref={containerRef}
