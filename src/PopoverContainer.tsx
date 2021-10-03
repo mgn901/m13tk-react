@@ -16,8 +16,9 @@ export interface PropsPopoverContainer {
 export const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
 	const { ids, setIds } = usePopoverContext();
-	const [id, setId] = React.useState(Math.random() * (2 ** 53));
-	const [ready, setReady] = React.useState<boolean>(false);
+	const [id, setId] = React.useState<number>(Math.random() * (2 ** 53));
+	const [ready, setReady] = React.useState<boolean | number>(false);
+	const [element, setElement] = React.useState<HTMLElement>(null);
 	const initialRect = {
 		x: 0,
 		y: 0,
@@ -31,25 +32,38 @@ export const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 	};
 	const [triggerRect, setTriggerRect] = React.useState<DOMRect>(initialRect);
 	const [style, setStyle] = React.useState<React.CSSProperties>({});
-	const className = props.className === undefined ? '' : ` ${props.className}`;
-	const elementId = 'tkreact-popover-instance-' + id;
-	if (ids.indexOf(id) === -1) {
-		setIds((ids) => {
-			ids.push(id);
-			return ids;
-		});
-	}
+	const className = props.className !== undefined ? ` ${props.className}` : '';
+	const timeout = props.timeout !== undefined ? props.timeout : 100;
 	React.useEffect(() => {
+		setIds((ids) => {
+			let newIds = [...ids];
+			newIds.push(id);
+			return newIds;
+		});
 		const id_ = id;
-		setReady(true);
 		return () => {
 			setIds((ids) => {
+				let newIds = [...ids];
 				const idx = ids.indexOf(id_);
-				ids.splice(idx);
-				return ids;
+				newIds.splice(idx);
+				return newIds;
 			});
 		};
 	}, []);
+	React.useEffect(() => {
+		const newElement = document.getElementById('tkreact-popover-instance-' + id);
+		setElement(newElement);
+		if (ready !== true && newElement !== null) {
+			setReady(true);
+		} else if (newElement === null) {
+			setReady((ready) => {
+				if (typeof ready === 'number') {
+					return ready + 1;
+				}
+				return 0;
+			});
+		}
+	}, [ready]);
 	React.useEffect(() => {
 		const newTriggerRect = props.trigger !== null
 			? props.trigger.getBoundingClientRect()
@@ -85,8 +99,8 @@ export const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 			</div>
 		</CSSTransition>
 	</>;
-	if (ready) {
-		return ReactDOM.createPortal(renderedInstance, document.getElementById(elementId));
+	if (ready === true) {
+		return ReactDOM.createPortal(renderedInstance, element);
 	} else {
 		return null;
 	}
