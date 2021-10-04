@@ -13,7 +13,9 @@ export const computeStyle = (
 	triggerRect: DOMRect,
 	containerWidth: number,
 	containerHeight: number,
-	place: PropsPopoverContainer['place'] = 'topBottom',
+	place: PropsPopoverContainer['place'],
+	distance: PropsPopoverContainer['distance'],
+	margin: PropsPopoverContainer['margin'],
 ): React.CSSProperties => {
 	const vpWidth = document.documentElement.clientWidth;
 	const vpHeight = document.documentElement.clientHeight;
@@ -91,14 +93,15 @@ export const computeStyle = (
 	const idxA = axisLengthSrc[0][inactivePlace] > axisLengthSrc[1][inactivePlace] ? 0 : 1;
 	const valueToUse = axis[idxA][place].value > axis[idxA][place].alternateValue ? 'value' : 'alternateValue';
 	const newStyle = {
-		maxWidth: '100%',
-		maxHeight: '100%',
-		[contact[idxC][place].name]: contact[idxC][place].value,
-		[axis[idxA][place].name]: axis[idxA][place][valueToUse],
-		[axisLength[idxC][place].name]: axisLength[idxC][place].value,
+		maxWidth: `calc(100% - 2 * (${margin}))`,
+		maxHeight: `calc(100% - 2 * (${margin}))`,
+		[contact[idxC][place].name]: `calc(${contact[idxC][place].value}px + (${distance}))`,
+		[axis[idxA][place].name]: `calc(${axis[idxA][place][valueToUse]}px + (${margin}))`,
+		[axisLength[idxC][place].name]: `calc(${axisLength[idxC][place].value}px - 2 * (${margin}))`,
 		transformOrigin: place === 'topBottom'
-			? transformOrigin[idxA][place][valueToUse].x + ' ' + transformOrigin[idxC][place][valueToUse].y
-			: transformOrigin[idxC][place][valueToUse].x + ' ' + transformOrigin[idxA][place][valueToUse].y,
+			? `calc(${transformOrigin[idxA][place][valueToUse].x} - 1 * ${idxA + 1} * (${margin})) ${transformOrigin[idxC][place][valueToUse].y}`
+			: `${transformOrigin[idxC][place][valueToUse].x} calc(${transformOrigin[idxA][place][valueToUse].y} - 1 * ${idxA + 1} * (${margin}))`,
 	};
+	console.log(newStyle);
 	return newStyle;
 }

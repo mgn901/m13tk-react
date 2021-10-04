@@ -9,12 +9,13 @@ export interface PropsPopoverContainer {
 	isOpened: boolean,
 	trigger: Element | null,
 	close: () => void,
-	place?: 'topBottom' | 'rightLeft',
 	timeout?: number;
-	className?: HTMLElement['className'],
+	place?: 'topBottom' | 'rightLeft',
+	distance?: string;
+	margin?: string;
 };
 
-export const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
+const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
 	const { ids, setIds } = usePopoverContext();
 	const [id, setId] = React.useState<number>(Math.random() * (2 ** 53));
@@ -78,7 +79,7 @@ export const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 			: 0
 		setTriggerRect(newTriggerRect);
 		if (props.isOpened) {
-			const newStyle = computeStyle(newTriggerRect, containerWidth, containerHeight, props.place);
+			const newStyle = computeStyle(newTriggerRect, containerWidth, containerHeight, props.place, props.distance, props.margin);
 			setStyle(newStyle);
 		}
 	}, [props.isOpened, props.children]);
@@ -108,3 +109,12 @@ export const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 		return null;
 	}
 }
+
+PopoverContainer.defaultProps = {
+	timeout: 100,
+	place: 'topBottom',
+	distance: '0px',
+	margin: '0px',
+};
+
+export { PopoverContainer };
