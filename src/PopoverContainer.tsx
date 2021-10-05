@@ -9,10 +9,12 @@ export interface PropsPopoverContainer {
 	isOpened: boolean,
 	trigger: Element | null,
 	close: () => void,
-	timeout?: number;
+	timeout?: number,
 	place?: 'topBottom' | 'rightLeft',
-	distance?: string;
-	margin?: string;
+	distance?: string,
+	margin?: string,
+	containerClassName?: string,
+	props?: React.HTMLAttributes<HTMLDivElement>,
 };
 
 const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
@@ -34,9 +36,7 @@ const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 	};
 	const [triggerRect, setTriggerRect] = React.useState<DOMRect>(initialRect);
 	const [style, setStyle] = React.useState<React.CSSProperties>({});
-	const className = props.className !== undefined ? ` ${props.className}` : '';
 	const conditionalClassName = props.isOpened ? '' : 'tkreact-popover-container-transition-exit-done';
-	const timeout = props.timeout !== undefined ? props.timeout : 100;
 	React.useEffect(() => {
 		setIds((ids) => {
 			let newIds = [...ids];
@@ -93,13 +93,15 @@ const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 		<CSSTransition
 			in={props.isOpened}
 			appear={true}
-			timeout={timeout}
+			timeout={props.timeout}
 			classNames='tkreact-popover-container-transition'>
 			<div
 				ref={containerRef}
-				className={`tkreact-popover-container${className} ${conditionalClassName}`}
+				className={`${props.containerClassName} ${conditionalClassName}`}
 				style={style}>
-				{props.children}
+				<div {...props.props}>
+					{props.children}
+				</div>
 			</div>
 		</CSSTransition>
 	</>;
@@ -111,10 +113,11 @@ const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 }
 
 PopoverContainer.defaultProps = {
-	timeout: 100,
+	timeout: 1000,
 	place: 'topBottom',
-	distance: '0px',
-	margin: '0px',
+	distance: '.5rem',
+	margin: '5rem',
+	containerClassName: 'tkreact-popover-container tkr-3 tkshadow-2 tkcolor-bg0',
 };
 
 export { PopoverContainer };
