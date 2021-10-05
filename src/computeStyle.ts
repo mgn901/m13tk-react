@@ -1,14 +1,6 @@
 import * as React from 'react';
 import { PropsPopoverContainer } from './PopoverContainer';
 
-type Dict = {
-	[K in PropsPopoverContainer['place']]: {
-		name: string,
-		value: number,
-		alternateValue?: number,
-	}
-}[];
-
 export const computeStyle = (
 	triggerRect: DOMRect,
 	containerWidth: number,
@@ -17,91 +9,113 @@ export const computeStyle = (
 	distance: PropsPopoverContainer['distance'],
 	margin: PropsPopoverContainer['margin'],
 ): React.CSSProperties => {
-	const vpWidth = document.documentElement.clientWidth;
-	const vpHeight = document.documentElement.clientHeight;
-	const pageWidth = document.documentElement.offsetWidth;
-	const pageHeight = document.documentElement.offsetHeight;
-	const adjustPosX = - (pageWidth - vpWidth);
-	const adjustPosY = - (pageHeight - vpHeight);
-	const adjustAxisX = triggerRect.width / 2 - containerWidth / 2;
-	const adjustAxisY = triggerRect.height / 2 - containerHeight / 2;
-	const axisLengthSrc = [{
-		topBottom: vpHeight - triggerRect.bottom,
-		rightLeft: vpWidth - triggerRect.right,
-	}, {
-		topBottom: triggerRect.top,
-		rightLeft: triggerRect.left,
-	}];
-	const axisLength: Dict = [{
-		topBottom: { name: 'maxHeight', value: axisLengthSrc[0].topBottom },
-		rightLeft: { name: 'maxWidth', value: axisLengthSrc[0].rightLeft },
-	}, {
-		topBottom: { name: 'maxHeight', value: axisLengthSrc[1].topBottom },
-		rightLeft: { name: 'maxWidth', value: axisLengthSrc[1].rightLeft },
-	}];
-	const contact: Dict = [{
-		topBottom: { name: 'top', value: triggerRect.bottom + scrollY },
-		rightLeft: { name: 'left', value: triggerRect.right + scrollX },
-	}, {
-		topBottom: { name: 'bottom', value: pageHeight - (triggerRect.top + scrollY) + adjustPosY },
-		rightLeft: { name: 'right', value: pageWidth - (triggerRect.left + scrollX) + adjustPosX },
-	}];
-	const axis: Dict = [{
-		topBottom: {
-			name: 'left',
-			value: triggerRect.left + scrollX + adjustAxisX,
-			alternateValue: scrollX,
-		},
-		rightLeft: {
-			name: 'top',
-			value: triggerRect.top + scrollY + adjustAxisY,
-			alternateValue: scrollY,
-		},
-	}, {
-		topBottom: {
-			name: 'right',
-			value: pageWidth - (triggerRect.right + scrollX) + adjustAxisX + adjustPosX,
-			alternateValue: -scrollX,
-		},
-		rightLeft: {
-			name: 'bottom',
-			value: pageHeight - (triggerRect.bottom + scrollY) + adjustAxisY + adjustPosY,
-			alternateValue: -scrollY,
-		},
-	}];
-	const transformOrigin = [{
-		topBottom: {
-			value: { x: '50%', y: '0%' },
-			alternateValue: { x: triggerRect.left + triggerRect.width / 2 + 'px', y: '0%' },
-		},
-		rightLeft: {
-			value: { x: '0%', y: '50%' },
-			alternateValue: { x: '0%', y: triggerRect.top + triggerRect.height / 2 + 'px' },
-		},
-	}, {
-		topBottom: {
-			value: { x: '50%', y: '100%' },
-			alternateValue: { x: containerWidth - (vpWidth - triggerRect.right) - triggerRect.width / 2 + 'px', y: '100%' },
-		},
-		rightLeft: {
-			value: { x: '100%', y: '50%' },
-			alternateValue: { x: '100%', y: containerHeight - (vpHeight - triggerRect.bottom) - triggerRect.height / 2 + 'px' },
-		},
-	}];
-	const inactivePlace = place === 'topBottom' ? 'rightLeft' : 'topBottom';
-	const idxC = axisLengthSrc[0][place] > axisLengthSrc[1][place] ? 0 : 1;
-	const idxA = axisLengthSrc[0][inactivePlace] > axisLengthSrc[1][inactivePlace] ? 0 : 1;
-	const valueToUse = axis[idxA][place].value > axis[idxA][place].alternateValue ? 'value' : 'alternateValue';
+	const posCandidates = [
+		['left', 'right'],
+		['top', 'bottom'],
+	];
+	const sizeCandidates = ['width', 'height'];
+	const scCandidates = [scrollX, scrollY];
+	const placeIndex = place === 'topBottom' ? 0 : 1;
+	const posX = posCandidates[placeIndex];
+	const posY = posCandidates[(placeIndex + 1) % 2];
+	const sizeX = sizeCandidates[placeIndex];
+	const sizeY = sizeCandidates[(placeIndex + 1) % 2];
+	const sizeXCC = sizeX[0].toUpperCase() + sizeX.slice(1);
+	const sizeYCC = sizeY[0].toUpperCase() + sizeY.slice(1);
+	// X軸方向のスクロール量
+	const scX = scCandidates[placeIndex];
+	// Y軸方向のスクロール量
+	const scY = scCandidates[(placeIndex + 1) % 2];
+	// 画面のサイズ
+	const vpSizeX = document.documentElement[`client${sizeXCC}`];
+	const vpSizeY = document.documentElement[`client${sizeYCC}`];
+	// ページのサイズ
+	const pgSizeX = document.documentElement[`offset${sizeXCC}`];
+	const pgSizeY = document.documentElement[`offset${sizeYCC}`];
+	// トリガーの左上の座標
+	const trPosX = triggerRect[posX[0]];
+	const trPosY = triggerRect[posY[0]];
+	// トリガーのサイズ
+	const trSizeX = triggerRect[sizeX];
+	const trSizeY = triggerRect[sizeY];
+	// アニメーション起点の座標
+	const arPosX = trPosX + trSizeX / 2;
+	const arPosY = trPosY + trSizeY / 2 < vpSizeY / 2
+		? trPosY + trSizeY
+		: trPosY - trSizeY;
+	// コンテナのサイズ
+	const ctSizeX = place === 'topBottom' ? containerWidth : containerHeight;
+	const ctSizeY = place === 'topBottom' ? containerHeight : containerWidth;
+	// コンテナの左上の座標
+	const ctPosX = arPosX - ctSizeX / 2;
+	const ctPosY = arPosY;
+	// コンテナの座標のCSSでの表現
+	const ctPosXProperty = arPosX < vpSizeX / 2
+		? posX[0]
+		: posX[1];
+	const ctPosXValue = arPosX < vpSizeX / 2
+		? ctPosX
+		: vpSizeX - ctPosX - ctSizeX;
+	const adjustCtPosXValue = trPosX + trSizeX / 2 < vpSizeX / 2
+		? scX
+		: -scX;
+	const ctPosYProperty = trPosY + trSizeY / 2 < vpSizeY / 2
+		? posY[0]
+		: posY[1];
+	const ctPosYValue = trPosY + trSizeY / 2 < vpSizeY / 2
+		? ctPosY
+		: vpSizeY - ctPosY - trSizeY;
+	const adjustCtPosYValue = trPosY + trSizeY / 2 < vpSizeY / 2
+		? scY
+		: -scY;
+	// コンテナの制限サイズのCSSでの表現
+	const ctSizeXProperty = `max${sizeXCC}`;
+	const ctSizeXValue = vpSizeX;
+	const ctSizeYProperty = `max${sizeYCC}`;
+	const ctSizeYValue = vpSizeY - ctPosYValue;
+	// アニメーション起点のCSSでの表現
+	const toPosX = arPosX < vpSizeX / 2
+		? `calc(${arPosX}px - max(${ctPosX}px,${margin}))`
+		: `calc(100% + ${arPosX}px - min(${ctPosX + ctSizeX}px,calc(${vpSizeX}px - (${margin}))))`;
+	const toPosY = trPosY + trSizeY / 2 < vpSizeY / 2
+		? '0%'
+		: '100%';
+	// スタイルシート
 	const newStyle = {
-		maxWidth: `calc(100% - 2 * (${margin}))`,
-		maxHeight: `calc(100% - 2 * (${margin}))`,
-		[contact[idxC][place].name]: `calc(${contact[idxC][place].value}px + (${distance}))`,
-		[axis[idxA][place].name]: `max(calc(${axis[idxA][place].alternateValue}px + (${margin})),${axis[idxA][place].value}px)`,
-		[axisLength[idxC][place].name]: `calc(${axisLength[idxC][place].value}px - (${margin}))`,
+		[ctPosXProperty]: `max(${ctPosXValue + adjustCtPosXValue}px,calc(${margin} + ${adjustCtPosXValue}px))`,
+		[ctPosYProperty]: `calc(${ctPosYValue + adjustCtPosYValue}px + (${distance}))`,
+		[ctSizeXProperty]: `calc(${ctSizeXValue}px - 2 * (${margin}))`,
+		[ctSizeYProperty]: `calc(${ctSizeYValue}px - (${margin}) - (${distance}))`,
 		transformOrigin: place === 'topBottom'
-			? `calc(${transformOrigin[idxA][place][valueToUse].x} - 1 * ${idxA + 1} * (${margin})) ${transformOrigin[idxC][place][valueToUse].y}`
-			: `${transformOrigin[idxC][place][valueToUse].x} calc(${transformOrigin[idxA][place][valueToUse].y} - 1 * ${idxA + 1} * (${margin}))`,
+			? `${toPosX} ${toPosY}`
+			: `${toPosY} ${toPosX}`,
 	};
+	console.log({
+		vpSizeX,
+		vpSizeY,
+		pgSizeX,
+		pgSizeY,
+		trPosX,
+		trPosY,
+		trSizeX,
+		trSizeY,
+		arPosX,
+		arPosY,
+		ctPosX,
+		ctPosY,
+		ctSizeX,
+		ctSizeY,
+		ctPosXProperty,
+		ctPosXValue,
+		adjustCtPosXValue,
+		ctPosYProperty,
+		ctPosYValue,
+		adjustCtPosYValue,
+		ctSizeXProperty,
+		ctSizeYValue,
+		toPosX,
+		toPosY,
+	})
 	console.log(newStyle);
 	return newStyle;
 }
