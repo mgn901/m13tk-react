@@ -116,7 +116,7 @@ PopoverContainer.defaultProps = {
 	timeout: 1000,
 	place: 'topBottom',
 	distance: '.5rem',
-	margin: '5rem',
+	margin: '.5rem',
 	containerClassName: 'tkreact-popover-container tkr-3 tkshadow-2 tkcolor-bg0',
 };
 
