@@ -96,8 +96,8 @@ export const computeStyle = (
 		maxWidth: `calc(100% - 2 * (${margin}))`,
 		maxHeight: `calc(100% - 2 * (${margin}))`,
 		[contact[idxC][place].name]: `calc(${contact[idxC][place].value}px + (${distance}))`,
-		[axis[idxA][place].name]: `calc(${axis[idxA][place][valueToUse]}px + (${margin}))`,
-		[axisLength[idxC][place].name]: `calc(${axisLength[idxC][place].value}px - 2 * (${margin}))`,
+		[axis[idxA][place].name]: `max(calc(${axis[idxA][place].alternateValue}px + (${margin})),${axis[idxA][place].value}px)`,
+		[axisLength[idxC][place].name]: `calc(${axisLength[idxC][place].value}px - (${margin}))`,
 		transformOrigin: place === 'topBottom'
 			? `calc(${transformOrigin[idxA][place][valueToUse].x} - 1 * ${idxA + 1} * (${margin})) ${transformOrigin[idxC][place][valueToUse].y}`
 			: `${transformOrigin[idxC][place][valueToUse].x} calc(${transformOrigin[idxA][place][valueToUse].y} - 1 * ${idxA + 1} * (${margin}))`,
