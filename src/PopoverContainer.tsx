@@ -15,6 +15,7 @@ export interface PropsPopoverContainer {
 	margin?: string,
 	wrapperClassName?: string,
 	props?: React.HTMLAttributes<HTMLDivElement>,
+	debug?: boolean,
 };
 
 const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
@@ -79,7 +80,7 @@ const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 			: 0
 		setTriggerRect(newTriggerRect);
 		if (props.isOpened) {
-			const { newWrapperStyle } = computeStyle(newTriggerRect, wrapperWidth, wrapperHeight, props.place, props.distance, props.margin);
+			const { newWrapperStyle } = computeStyle(newTriggerRect, wrapperWidth, wrapperHeight, props.place, props.distance, props.margin, props.debug);
 			setWrapperStyle(newWrapperStyle);
 		}
 	}, [props.isOpened, props.children]);
@@ -118,6 +119,7 @@ PopoverContainer.defaultProps = {
 	distance: '.5rem',
 	margin: '.5rem',
 	wrapperClassName: 'tkreact-popover-wrapper tkb-normal tkr-3 tkshadow-4 tkcolor-bg0',
+	debug: false,
 };
 
 export { PopoverContainer };

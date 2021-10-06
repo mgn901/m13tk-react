@@ -8,6 +8,7 @@ export const computeStyle = (
 	place: PropsPopoverContainer['place'],
 	distance: PropsPopoverContainer['distance'],
 	margin: PropsPopoverContainer['margin'],
+	debug: PropsPopoverContainer['debug'],
 ) => {
 	const posCandidates = [
 		['left', 'right'],
@@ -90,32 +91,34 @@ export const computeStyle = (
 			? `${toPosX} ${toPosY}`
 			: `${toPosY} ${toPosX}`,
 	};
-	console.log({
-		vpSizeX,
-		vpSizeY,
-		pgSizeX,
-		pgSizeY,
-		trPosX,
-		trPosY,
-		trSizeX,
-		trSizeY,
-		arPosX,
-		arPosY,
-		wrPosX,
-		wrPosY,
-		wrSizeX,
-		wrSizeY,
-		wrPosXProperty,
-		wrPosXValue,
-		adjustWrPosXValue,
-		wrPosYProperty,
-		wrPosYValue,
-		adjustWrPosYValue,
-		wrSizeXProperty,
-		wrSizeYValue,
-		toPosX,
-		toPosY,
+	if (debug) {
+		console.log({
+			vpSizeX,
+			vpSizeY,
+			pgSizeX,
+			pgSizeY,
+			trPosX,
+			trPosY,
+			trSizeX,
+			trSizeY,
+			arPosX,
+			arPosY,
+			wrPosX,
+			wrPosY,
+			wrSizeX,
+			wrSizeY,
+			wrPosXProperty,
+			wrPosXValue,
+			adjustWrPosXValue,
+			wrPosYProperty,
+			wrPosYValue,
+			adjustWrPosYValue,
+			wrSizeXProperty,
+			wrSizeYValue,
+			toPosX,
+			toPosY,
 		});
 		console.log(newWrapperStyle);
+	}
 	return { newWrapperStyle };
 }
