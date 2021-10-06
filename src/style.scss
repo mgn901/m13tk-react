@@ -1,8 +1,12 @@
 .tkreact-popover-wrapper {
 	position: absolute;
 	z-index: 1;
-	overflow: auto;
 	--transition-in: cubic-bezier(0, 0, 0, 1);
+}
+
+.tkreact-popover-wrapper-inner {
+	overflow: auto;
+	height: 100%;
 }
 
 .tkreact-popover-wrapper-transition-enter {
@@ -29,6 +33,74 @@
 	opacity: 0;
 	transform: scale(.9);
 	transition: .1s var(--transition-in);
+}
+
+%arrow {
+	position: absolute;
+	width: 1rem;
+	height: 1rem;
+	transform: translate(-50%, -50%);
+}
+
+%arrow::before, %arrow::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 0;
+	border: .5rem solid transparent;
+}
+
+.tkreact-popover-arrow-{
+	&top {
+		@extend %arrow;
+		&::before {
+			top: -4px;
+			left: -2px;
+			border: calc(.5rem + 2px) solid transparent;
+			border-bottom: calc(.5rem + 2px) solid var(--tkcolor-bg2);
+		}
+		&::after {
+			border-bottom: .5rem solid var(--tkcolor-bg0);
+		}
+	}
+	&right {
+		@extend %arrow;
+		&::before {
+			top: -2px;
+			left: 0;
+			border: calc(.5rem + 2px) solid transparent;
+			border-left: calc(.5rem + 2px) solid var(--tkcolor-bg2);
+		}
+		&::after {
+			border-left: .5rem solid var(--tkcolor-bg0);
+		}
+	}
+	&bottom {
+		@extend %arrow;
+		&::before {
+			top: 0;
+			left: -2px;
+			border: calc(.5rem + 2px) solid transparent;
+			border-top: calc(.5rem + 2px) solid var(--tkcolor-bg2);
+		}
+		&::after {
+			border-top: .5rem solid var(--tkcolor-bg0);
+		}
+	}
+	&left {
+		@extend %arrow;
+		&::before {
+			top: -2px;
+			left: -4px;
+			border: calc(.5rem + 2px) solid transparent;
+			border-right: calc(.5rem + 2px) solid var(--tkcolor-bg2);
+		}
+		&::after {
+			border-right: .5rem solid var(--tkcolor-bg0);
+		}
+	}
 }
 
 .tkreact-popover-closer {

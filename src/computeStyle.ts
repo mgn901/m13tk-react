@@ -79,8 +79,8 @@ export const computeStyle = (
 		? `calc(${arPosX}px - max(${wrPosX}px,${margin}))`
 		: `calc(100% + ${arPosX}px - min(${wrPosX + wrSizeX}px,calc(${vpSizeX}px - (${margin}))))`;
 	const toPosY = trPosY + trSizeY / 2 < vpSizeY / 2
-		? '0%'
-		: '100%';
+		? `calc(0% - (${margin}))`
+		: `calc(100% + (${margin}))`;
 	// スタイルシート
 	const newWrapperStyle: React.CSSProperties = {
 		[wrPosXProperty]: `max(${wrPosXValue + adjustWrPosXValue}px,calc(${margin} + ${adjustWrPosXValue}px))`,
@@ -91,6 +91,11 @@ export const computeStyle = (
 			? `${toPosX} ${toPosY}`
 			: `${toPosY} ${toPosX}`,
 	};
+	const newArrowStyle: React.CSSProperties = {
+		[posX[0]]: toPosX,
+		[posY[0]]: toPosY,
+	};
+	const newArrowClassNameSuffix = `-${wrPosYProperty}`;
 	if (debug) {
 		console.log({
 			vpSizeX,
@@ -119,6 +124,8 @@ export const computeStyle = (
 			toPosY,
 		});
 		console.log(newWrapperStyle);
+		console.log(newArrowStyle);
+		console.log(newArrowClassNameSuffix);
 	}
-	return { newWrapperStyle };
+	return { newWrapperStyle, newArrowStyle, newArrowClassNameSuffix };
 }

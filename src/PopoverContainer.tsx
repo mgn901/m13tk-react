@@ -14,6 +14,7 @@ export interface PropsPopoverContainer {
 	distance?: string,
 	margin?: string,
 	wrapperClassName?: string,
+	arrowClassName?: string,
 	props?: React.HTMLAttributes<HTMLDivElement>,
 	debug?: boolean,
 };
@@ -37,6 +38,8 @@ const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 	};
 	const [triggerRect, setTriggerRect] = React.useState<DOMRect>(initialRect);
 	const [wrapperStyle, setWrapperStyle] = React.useState<React.CSSProperties>({});
+	const [arrowStyle, setArrowStyle] = React.useState<React.CSSProperties>({});
+	const [arrowClassNameSuffix, setArrowClassNameSuffix] = React.useState<string>('');
 	const conditionalClassName = props.isOpened ? '' : 'tkreact-popover-wrapper-transition-exit-done';
 	React.useEffect(() => {
 		setIds((ids) => {
@@ -80,8 +83,10 @@ const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 			: 0
 		setTriggerRect(newTriggerRect);
 		if (props.isOpened) {
-			const { newWrapperStyle } = computeStyle(newTriggerRect, wrapperWidth, wrapperHeight, props.place, props.distance, props.margin, props.debug);
+			const { newWrapperStyle, newArrowStyle, newArrowClassNameSuffix } = computeStyle(newTriggerRect, wrapperWidth, wrapperHeight, props.place, props.distance, props.margin, props.debug);
 			setWrapperStyle(newWrapperStyle);
+			setArrowStyle(newArrowStyle);
+			setArrowClassNameSuffix(newArrowClassNameSuffix);
 		}
 	}, [props.isOpened, props.children]);
 	const renderedInstance = <>
@@ -98,10 +103,18 @@ const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 			classNames='tkreact-popover-wrapper-transition'>
 			<div
 				ref={wrapperRef}
-				className={`${props.wrapperClassName} ${conditionalClassName}`}
+				className={`tkreact-popover-wrapper ${props.wrapperClassName} ${conditionalClassName}`}
 				style={wrapperStyle}>
-				<div {...props.props}>
-					{props.children}
+				<div
+					className='tkreact-popover-wrapper-inner'
+					style={{ maxWidth: wrapperStyle.maxWidth, maxHeight: wrapperStyle.maxHeight }}>
+					<div {...props.props}>
+						{props.children}
+					</div>
+				</div>
+				<div
+					className={`tkreact-popover-arrow${arrowClassNameSuffix} ${props.arrowClassName}`}
+					style={arrowStyle}>
 				</div>
 			</div>
 		</CSSTransition>
@@ -118,8 +131,9 @@ PopoverContainer.defaultProps = {
 	place: 'topBottom',
 	distance: '.5rem',
 	margin: '.5rem',
-	wrapperClassName: 'tkreact-popover-wrapper tkb-normal tkr-3 tkshadow-4 tkcolor-bg0',
-	debug: false,
+	wrapperClassName: 'tkb-normal tkr-3 tkshadow-4 tkcolor-bg0',
+	arrowClassName: '',
+	debug: true,
 };
 
 export { PopoverContainer };
