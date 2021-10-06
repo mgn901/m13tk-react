@@ -35,7 +35,7 @@ const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 		toJSON: () => { },
 	};
 	const [triggerRect, setTriggerRect] = React.useState<DOMRect>(initialRect);
-	const [style, setStyle] = React.useState<React.CSSProperties>({});
+	const [wrapperStyle, setWrapperStyle] = React.useState<React.CSSProperties>({});
 	const conditionalClassName = props.isOpened ? '' : 'tkreact-popover-wrapper-transition-exit-done';
 	React.useEffect(() => {
 		setIds((ids) => {
@@ -79,8 +79,8 @@ const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 			: 0
 		setTriggerRect(newTriggerRect);
 		if (props.isOpened) {
-			const newStyle = computeStyle(newTriggerRect, wrapperWidth, wrapperHeight, props.place, props.distance, props.margin);
-			setStyle(newStyle);
+			const { newWrapperStyle } = computeStyle(newTriggerRect, wrapperWidth, wrapperHeight, props.place, props.distance, props.margin);
+			setWrapperStyle(newWrapperStyle);
 		}
 	}, [props.isOpened, props.children]);
 	const renderedInstance = <>
@@ -98,7 +98,7 @@ const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 			<div
 				ref={wrapperRef}
 				className={`${props.wrapperClassName} ${conditionalClassName}`}
-				style={style}>
+				style={wrapperStyle}>
 				<div {...props.props}>
 					{props.children}
 				</div>

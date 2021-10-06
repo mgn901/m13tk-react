@@ -8,7 +8,7 @@ export const computeStyle = (
 	place: PropsPopoverContainer['place'],
 	distance: PropsPopoverContainer['distance'],
 	margin: PropsPopoverContainer['margin'],
-): React.CSSProperties => {
+) => {
 	const posCandidates = [
 		['left', 'right'],
 		['top', 'bottom'],
@@ -81,7 +81,7 @@ export const computeStyle = (
 		? '0%'
 		: '100%';
 	// スタイルシート
-	const newStyle = {
+	const newWrapperStyle: React.CSSProperties = {
 		[wrPosXProperty]: `max(${wrPosXValue + adjustWrPosXValue}px,calc(${margin} + ${adjustWrPosXValue}px))`,
 		[wrPosYProperty]: `calc(${wrPosYValue + adjustWrPosYValue}px + (${distance}))`,
 		[wrSizeXProperty]: `calc(${wrSizeXValue}px - 2 * (${margin}))`,
@@ -115,7 +115,7 @@ export const computeStyle = (
 		wrSizeYValue,
 		toPosX,
 		toPosY,
-	})
-	console.log(newStyle);
-	return newStyle;
+		});
+		console.log(newWrapperStyle);
+	return { newWrapperStyle };
 }
