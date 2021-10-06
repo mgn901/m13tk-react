@@ -3,8 +3,8 @@ import { PropsPopoverContainer } from './PopoverContainer';
 
 export const computeStyle = (
 	triggerRect: DOMRect,
-	containerWidth: number,
-	containerHeight: number,
+	wrapperWidth: number,
+	wrapperHeight: number,
 	place: PropsPopoverContainer['place'],
 	distance: PropsPopoverContainer['distance'],
 	margin: PropsPopoverContainer['margin'],
@@ -44,48 +44,48 @@ export const computeStyle = (
 		? trPosY + trSizeY
 		: trPosY - trSizeY;
 	// コンテナのサイズ
-	const ctSizeX = place === 'topBottom' ? containerWidth : containerHeight;
-	const ctSizeY = place === 'topBottom' ? containerHeight : containerWidth;
+	const wrSizeX = place === 'topBottom' ? wrapperWidth : wrapperHeight;
+	const wrSizeY = place === 'topBottom' ? wrapperHeight : wrapperWidth;
 	// コンテナの左上の座標
-	const ctPosX = arPosX - ctSizeX / 2;
-	const ctPosY = arPosY;
+	const wrPosX = arPosX - wrSizeX / 2;
+	const wrPosY = arPosY;
 	// コンテナの座標のCSSでの表現
-	const ctPosXProperty = arPosX < vpSizeX / 2
+	const wrPosXProperty = arPosX < vpSizeX / 2
 		? posX[0]
 		: posX[1];
-	const ctPosXValue = arPosX < vpSizeX / 2
-		? ctPosX
-		: vpSizeX - ctPosX - ctSizeX;
-	const adjustCtPosXValue = trPosX + trSizeX / 2 < vpSizeX / 2
+	const wrPosXValue = arPosX < vpSizeX / 2
+		? wrPosX
+		: vpSizeX - wrPosX - wrSizeX;
+	const adjustWrPosXValue = trPosX + trSizeX / 2 < vpSizeX / 2
 		? scX
 		: -scX;
-	const ctPosYProperty = trPosY + trSizeY / 2 < vpSizeY / 2
+	const wrPosYProperty = trPosY + trSizeY / 2 < vpSizeY / 2
 		? posY[0]
 		: posY[1];
-	const ctPosYValue = trPosY + trSizeY / 2 < vpSizeY / 2
-		? ctPosY
-		: vpSizeY - ctPosY - trSizeY;
-	const adjustCtPosYValue = trPosY + trSizeY / 2 < vpSizeY / 2
+	const wrPosYValue = trPosY + trSizeY / 2 < vpSizeY / 2
+		? wrPosY
+		: vpSizeY - wrPosY - trSizeY;
+	const adjustWrPosYValue = trPosY + trSizeY / 2 < vpSizeY / 2
 		? scY
 		: -scY;
 	// コンテナの制限サイズのCSSでの表現
-	const ctSizeXProperty = `max${sizeXCC}`;
-	const ctSizeXValue = vpSizeX;
-	const ctSizeYProperty = `max${sizeYCC}`;
-	const ctSizeYValue = vpSizeY - ctPosYValue;
+	const wrSizeXProperty = `max${sizeXCC}`;
+	const wrSizeXValue = vpSizeX;
+	const wrSizeYProperty = `max${sizeYCC}`;
+	const wrSizeYValue = vpSizeY - wrPosYValue;
 	// アニメーション起点のCSSでの表現
 	const toPosX = arPosX < vpSizeX / 2
-		? `calc(${arPosX}px - max(${ctPosX}px,${margin}))`
-		: `calc(100% + ${arPosX}px - min(${ctPosX + ctSizeX}px,calc(${vpSizeX}px - (${margin}))))`;
+		? `calc(${arPosX}px - max(${wrPosX}px,${margin}))`
+		: `calc(100% + ${arPosX}px - min(${wrPosX + wrSizeX}px,calc(${vpSizeX}px - (${margin}))))`;
 	const toPosY = trPosY + trSizeY / 2 < vpSizeY / 2
 		? '0%'
 		: '100%';
 	// スタイルシート
 	const newStyle = {
-		[ctPosXProperty]: `max(${ctPosXValue + adjustCtPosXValue}px,calc(${margin} + ${adjustCtPosXValue}px))`,
-		[ctPosYProperty]: `calc(${ctPosYValue + adjustCtPosYValue}px + (${distance}))`,
-		[ctSizeXProperty]: `calc(${ctSizeXValue}px - 2 * (${margin}))`,
-		[ctSizeYProperty]: `calc(${ctSizeYValue}px - (${margin}) - (${distance}))`,
+		[wrPosXProperty]: `max(${wrPosXValue + adjustWrPosXValue}px,calc(${margin} + ${adjustWrPosXValue}px))`,
+		[wrPosYProperty]: `calc(${wrPosYValue + adjustWrPosYValue}px + (${distance}))`,
+		[wrSizeXProperty]: `calc(${wrSizeXValue}px - 2 * (${margin}))`,
+		[wrSizeYProperty]: `calc(${wrSizeYValue}px - (${margin}) - (${distance}))`,
 		transformOrigin: place === 'topBottom'
 			? `${toPosX} ${toPosY}`
 			: `${toPosY} ${toPosX}`,
@@ -101,18 +101,18 @@ export const computeStyle = (
 		trSizeY,
 		arPosX,
 		arPosY,
-		ctPosX,
-		ctPosY,
-		ctSizeX,
-		ctSizeY,
-		ctPosXProperty,
-		ctPosXValue,
-		adjustCtPosXValue,
-		ctPosYProperty,
-		ctPosYValue,
-		adjustCtPosYValue,
-		ctSizeXProperty,
-		ctSizeYValue,
+		wrPosX,
+		wrPosY,
+		wrSizeX,
+		wrSizeY,
+		wrPosXProperty,
+		wrPosXValue,
+		adjustWrPosXValue,
+		wrPosYProperty,
+		wrPosYValue,
+		adjustWrPosYValue,
+		wrSizeXProperty,
+		wrSizeYValue,
 		toPosX,
 		toPosY,
 	})

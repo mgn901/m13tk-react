@@ -13,12 +13,12 @@ export interface PropsPopoverContainer {
 	place?: 'topBottom' | 'rightLeft',
 	distance?: string,
 	margin?: string,
-	containerClassName?: string,
+	wrapperClassName?: string,
 	props?: React.HTMLAttributes<HTMLDivElement>,
 };
 
 const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
-	const containerRef = React.useRef<HTMLDivElement | null>(null);
+	const wrapperRef = React.useRef<HTMLDivElement | null>(null);
 	const { ids, setIds } = usePopoverContext();
 	const [id, setId] = React.useState<number>(Math.random() * (2 ** 53));
 	const [ready, setReady] = React.useState<boolean | number>(false);
@@ -36,7 +36,7 @@ const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 	};
 	const [triggerRect, setTriggerRect] = React.useState<DOMRect>(initialRect);
 	const [style, setStyle] = React.useState<React.CSSProperties>({});
-	const conditionalClassName = props.isOpened ? '' : 'tkreact-popover-container-transition-exit-done';
+	const conditionalClassName = props.isOpened ? '' : 'tkreact-popover-wrapper-transition-exit-done';
 	React.useEffect(() => {
 		setIds((ids) => {
 			let newIds = [...ids];
@@ -71,15 +71,15 @@ const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 		const newTriggerRect = props.trigger !== null
 			? props.trigger.getBoundingClientRect()
 			: triggerRect;
-		const containerWidth = containerRef.current !== null
-			? containerRef.current.offsetWidth
+		const wrapperWidth = wrapperRef.current !== null
+			? wrapperRef.current.offsetWidth
 			: 0
-		const containerHeight = containerRef.current !== null
-			? containerRef.current.offsetHeight
+		const wrapperHeight = wrapperRef.current !== null
+			? wrapperRef.current.offsetHeight
 			: 0
 		setTriggerRect(newTriggerRect);
 		if (props.isOpened) {
-			const newStyle = computeStyle(newTriggerRect, containerWidth, containerHeight, props.place, props.distance, props.margin);
+			const newStyle = computeStyle(newTriggerRect, wrapperWidth, wrapperHeight, props.place, props.distance, props.margin);
 			setStyle(newStyle);
 		}
 	}, [props.isOpened, props.children]);
@@ -94,10 +94,10 @@ const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 			in={props.isOpened}
 			appear={true}
 			timeout={props.timeout}
-			classNames='tkreact-popover-container-transition'>
+			classNames='tkreact-popover-wrapper-transition'>
 			<div
-				ref={containerRef}
-				className={`${props.containerClassName} ${conditionalClassName}`}
+				ref={wrapperRef}
+				className={`${props.wrapperClassName} ${conditionalClassName}`}
 				style={style}>
 				<div {...props.props}>
 					{props.children}
@@ -113,11 +113,11 @@ const PopoverContainer: React.FC<PropsPopoverContainer> = (props) => {
 }
 
 PopoverContainer.defaultProps = {
-	timeout: 1000,
+	timeout: 100,
 	place: 'topBottom',
 	distance: '.5rem',
 	margin: '.5rem',
-	containerClassName: 'tkreact-popover-container tkr-3 tkshadow-2 tkcolor-bg0',
+	wrapperClassName: 'tkreact-popover-wrapper tkb-normal tkr-3 tkshadow-4 tkcolor-bg0',
 };
 
 export { PopoverContainer };
