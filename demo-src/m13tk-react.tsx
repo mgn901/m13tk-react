@@ -9,10 +9,6 @@ export const App: React.FC = () => {
 	const { isOpened: isOpened2, trigger: trigger2, open: open2, close: close2 } = m13TKReact.usePopover();
 	const { isOpened: isOpened3, trigger: trigger3, open: open3, close: close3 } = m13TKReact.usePopover();
 	const { isOpened: isOpened4, trigger: trigger4, open: open4, close: close4 } = m13TKReact.usePopover();
-	const [value, setValue] = React.useState('');
-	const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setValue(e.target.value);
-	}
 	const hoge = <div className='tkcnt-txt tkm-4 tkp-3 tkb-normal tkr-2'>
 		<p className='tkpage-p'>ほげほげ</p>
 		<p className='tkpage-p'>ほげほげ</p>
@@ -20,14 +16,6 @@ export const App: React.FC = () => {
 		<p className='tkpage-p'>ほげほげ</p>
 		<p className='tkpage-p'>ほげほげ</p>
 	</div>;
-	const inner = <>
-		<label className='tkcnt-y tkinputwrapper-text tkm-3 tkpx-2'>
-			<span className='tkcnt-x tktxt-small'>ラベル</span>
-			<input className='tkcnt-x tkinput-text' type='text' value={value} onChange={handleChangeValue} />
-		</label>
-		{hoge}
-		{/* {hoge} */}
-	</>;
 	return <m13TKReact.ProviderPopoverContext>
 		<div className='tkcnt-y tkalign-center'>
 			<header className='tkcnt-x tksticky-top tkjustify-center tkpy-3 tkshadow-2'>
@@ -65,7 +53,7 @@ export const App: React.FC = () => {
 						close={close0}
 						place={'rightLeft'}
 						props={{ className: 'tkcnt-y tkx-80 tkp-3' }}>
-						{inner}
+						{hoge}
 						<button
 							className='tkbtn-normal tkchip-x tkm-2 tkpx-2'
 							onClick={open4}>
@@ -77,7 +65,7 @@ export const App: React.FC = () => {
 							close={close4}
 							place={'rightLeft'}
 							props={{ className: 'tkcnt-y tkx-80 tkp-3' }}>
-							{inner}
+							{hoge}
 						</m13TKReact.PopoverContainer>
 					</m13TKReact.PopoverContainer>
 					<m13TKReact.PopoverContainer
@@ -86,7 +74,7 @@ export const App: React.FC = () => {
 						close={close1}
 						place={'topBottom'}
 						props={{ className: 'tkcnt-y tkx-80 tkp-3' }}>
-						{inner}
+						{hoge}
 					</m13TKReact.PopoverContainer>
 					<m13TKReact.PopoverContainer
 						isOpened={isOpened2}
@@ -94,7 +82,7 @@ export const App: React.FC = () => {
 						close={close2}
 						place={'topBottom'}
 						props={{ className: 'tkcnt-y tkx-80 tkp-3' }}>
-						{inner}
+						{hoge}
 					</m13TKReact.PopoverContainer>
 					<m13TKReact.PopoverContainer
 						isOpened={isOpened3}
@@ -102,7 +90,7 @@ export const App: React.FC = () => {
 						close={close3}
 						place={'rightLeft'}
 						props={{ className: 'tkcnt-y tkx-80 tkp-3' }}>
-						{inner}
+						{hoge}
 					</m13TKReact.PopoverContainer>
 				</div>
 				{hoge}
