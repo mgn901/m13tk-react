@@ -10,7 +10,7 @@
     "package.json",
     "LICENSE.txt",
     "cjs",
-    "es",
+    "esm",
     "css"
   ],
   "scripts": {
