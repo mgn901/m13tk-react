@@ -44,13 +44,13 @@ export const computeStyle = (
 	const arPosY = trPosY + trSizeY / 2 < vpSizeY / 2
 		? trPosY + trSizeY
 		: trPosY - trSizeY;
-	// コンテナのサイズ
+	// ラッパーのサイズ
 	const wrSizeX = place === 'topBottom' ? wrapperWidth : wrapperHeight;
 	const wrSizeY = place === 'topBottom' ? wrapperHeight : wrapperWidth;
-	// コンテナの左上の座標
+	// ラッパーの左上の座標
 	const wrPosX = arPosX - wrSizeX / 2;
 	const wrPosY = arPosY;
-	// コンテナの座標のCSSでの表現
+	// ラッパーの座標のCSSでの表現
 	const wrPosXProperty = arPosX < vpSizeX / 2
 		? posX[0]
 		: posX[1];
@@ -69,7 +69,7 @@ export const computeStyle = (
 	const adjustWrPosYValue = trPosY + trSizeY / 2 < vpSizeY / 2
 		? scY
 		: -scY;
-	// コンテナの制限サイズのCSSでの表現
+	// ラッパーの制限サイズのCSSでの表現
 	const wrSizeXProperty = `max${sizeXCC}`;
 	const wrSizeXValue = vpSizeX;
 	const wrSizeYProperty = `max${sizeYCC}`;
