@@ -64,7 +64,7 @@ export const App: React.FC = () => {
 						trigger={trigger0}
 						close={close0}
 						place={'rightLeft'}
-						className='tkcnt-y tkx-80 tkp-3 tkb-normal tkshadow-2 tkr-3 tkcolor-light'>
+						props={{ className: 'tkcnt-y tkx-80 tkp-3' }}>
 						{inner}
 						<button
 							className='tkbtn-normal tkchip-x tkm-2 tkpx-2'
@@ -76,7 +76,7 @@ export const App: React.FC = () => {
 							trigger={trigger4}
 							close={close4}
 							place={'rightLeft'}
-							className='tkcnt-y tkx-80 tkp-3 tkb-normal tkshadow-2 tkr-3 tkcolor-light'>
+							props={{ className: 'tkcnt-y tkx-80 tkp-3' }}>
 							{inner}
 						</m13TKReact.PopoverContainer>
 					</m13TKReact.PopoverContainer>
@@ -85,7 +85,7 @@ export const App: React.FC = () => {
 						trigger={trigger1}
 						close={close1}
 						place={'topBottom'}
-						className='tkcnt-y tkx-80 tkp-3 tkb-normal tkshadow-2 tkr-3 tkcolor-light'>
+						props={{ className: 'tkcnt-y tkx-80 tkp-3' }}>
 						{inner}
 					</m13TKReact.PopoverContainer>
 					<m13TKReact.PopoverContainer
@@ -93,7 +93,7 @@ export const App: React.FC = () => {
 						trigger={trigger2}
 						close={close2}
 						place={'topBottom'}
-						className='tkcnt-y tkx-80 tkp-3 tkb-normal tkshadow-2 tkr-3 tkcolor-light'>
+						props={{ className: 'tkcnt-y tkx-80 tkp-3' }}>
 						{inner}
 					</m13TKReact.PopoverContainer>
 					<m13TKReact.PopoverContainer
@@ -101,7 +101,7 @@ export const App: React.FC = () => {
 						trigger={trigger3}
 						close={close3}
 						place={'rightLeft'}
-						className='tkcnt-y tkx-80 tkp-3 tkb-normal tkshadow-2 tkr-3 tkcolor-light'>
+						props={{ className: 'tkcnt-y tkx-80 tkp-3' }}>
 						{inner}
 					</m13TKReact.PopoverContainer>
 				</div>
