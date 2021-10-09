@@ -25,14 +25,14 @@
     "type": "git",
     "url": "git+https://github.com/mgn901/m13tk-react.git"
   },
-  "author": "mgn901 <mgn901+dev@gmail.com>",
+  "author": "mgn901 <mgn901+dev@gmail.com> (https://scrapbox.io/mgn901/Meganesium2001)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/mgn901/m13tk-react/issues"
   },
   "homepage": "https://github.com/mgn901/m13tk-react#readme",
   "peerDependencies": {
-    "@mgn901/m13tk": "^1.0.1",
+    "@mgn901/m13tk": "^2.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-transition-group": "^4.4.2"
