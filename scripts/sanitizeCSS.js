@@ -12,7 +12,7 @@ reader.on('line', (line) => {
 })
 reader.on('close', () => {
 	if (string.charCodeAt(0) === 0xFEFF) {
-		string.substr(1);
+		string = string.substr(1);
 	}
 	process.stdout.write(string);
 });
