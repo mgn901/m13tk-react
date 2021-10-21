@@ -9,6 +9,7 @@
   "files": [
     "package.json",
     "LICENSE.txt",
+    "README.md",
     "cjs",
     "esm",
     "css"
