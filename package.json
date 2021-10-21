@@ -9,6 +9,7 @@
   "files": [
     "package.json",
     "LICENSE.txt",
+    "README.md",
     "cjs",
     "esm",
     "css"
@@ -17,9 +18,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:esm": "tsc -p ./tsconfig.esm.json",
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
-    "build:css": "sass ./src/style.scss --style compressed --no-source-map | node ./scripts/sanitizeCSS.js > ./css/style.css",
-    "start": "rollup -c -w --environment BUILD:development",
-    "generateThirdpartyFile": "license-checker --production --json --customPath ./scripts/customPath.json | node ./scripts/sanitizeThirdpartyFile.js > ./THIRDPARTY.json"
+    "watch:esm": "tsc -w -p ./tsconfig.esm.json",
+    "watch:cjs": "tsc -w -p ./tsconfig.cjs.json",
+    "build:css": "sass ./src/style.scss --style compressed --no-source-map | node ./scripts/sanitizeCSS.js > ./css/style.css"
   },
   "repository": {
     "type": "git",
@@ -38,16 +39,9 @@
     "react-transition-group": "^4.4.2"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^20.0.0",
-    "@rollup/plugin-node-resolve": "^13.0.5",
-    "@rollup/plugin-replace": "^3.0.0",
-    "@rollup/plugin-typescript": "^8.2.5",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
     "@types/react-transition-group": "^4.4.3",
-    "rollup": "^2.57.0",
-    "rollup-plugin-scss": "^3.0.0",
-    "rollup-plugin-serve": "^1.1.0",
     "sass": "^1.42.1",
     "typescript": "^4.4.3"
   }
