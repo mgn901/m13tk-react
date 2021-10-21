@@ -17,9 +17,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:esm": "tsc -p ./tsconfig.esm.json",
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
-    "build:css": "sass ./src/style.scss --style compressed --no-source-map | node ./scripts/sanitizeCSS.js > ./css/style.css",
-    "start": "rollup -c -w --environment BUILD:development",
-    "generateThirdpartyFile": "license-checker --production --json --customPath ./scripts/customPath.json | node ./scripts/sanitizeThirdpartyFile.js > ./THIRDPARTY.json"
+    "watch:esm": "tsc -w -p ./tsconfig.esm.json",
+    "watch:cjs": "tsc -w -p ./tsconfig.cjs.json",
+    "build:css": "sass ./src/style.scss --style compressed --no-source-map | node ./scripts/sanitizeCSS.js > ./css/style.css"
   },
   "repository": {
     "type": "git",
